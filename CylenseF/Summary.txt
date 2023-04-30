@@ -1,0 +1,7 @@
+Welcome to Cylense! In this game, you'll be facing off against a bot with your own deck of 25 cards. 
+At the start of each game, you and your opponent will draw 5 cards from your deck.  
+During your turn, you'll have the option to place a monster card onto your field, attack with a monster on your field, 
+gamble for a chance at a positive or negative outcome, or draw a new card. 
+Be careful not to let your hand get too full, as you can only have a maximum of 7 cards at a time. 
+When attacking, the difference between your monster's "ATTACK" stat and the opposing monster's "DEFENSE" stat determines how much damage you or your opponent will take. 
+Each player starts with 10000 lifepoints, and the goal is to whittle your opponent's lifepoints down to zero before they do the same to you. Good luck, and have fun playing!
