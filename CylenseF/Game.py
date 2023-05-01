@@ -72,7 +72,6 @@ class Game:
         print("Turn: yours")
         print("self.Dice count: " + str(self.dice))
         print("")
-        time.sleep(0.5)
 
     def botGamesStatus(self):  # playerGameStatus
         names = [card.name for card in self.player_hand]
@@ -89,7 +88,6 @@ class Game:
         print("self.Dice count: " + str(self.dice))
         print("Turn: opponents")
         print("")
-        time.sleep(0.5)
 
     def playerGamble(self):  # player gamble
         if self.dice == 0:
@@ -216,7 +214,6 @@ class Game:
             if card_found:
                 break
             print("ERROR: item not found.")
-            time.sleep(0.5)
         self.playerGameStatus()
         print("You have successfully placed down " + str(c) + ".")
 
@@ -356,13 +353,11 @@ class Game:
         if self.player_life <= 0:
             self.clear_screen()
             print("Your opponent has won!")
-            time.sleep(500)
 
     def botDeath(self):
         if self.bot_life <= 0:
             self.clear_screen()
             print("You won!")
-            time.sleep(500)
 
     def info(self):
         self.clear_screen()
@@ -375,7 +370,6 @@ class Game:
             print("Bots field:")
         for card in self.bot_field:
             print(f"{card.name}, Attack: {card.attack}, Speed: {card.speed}")
-        time.sleep(10)
 
     def set_game_state(self, state):
         self.game_state = state
@@ -386,7 +380,6 @@ class Game:
         if self.average_player_speed > self.average_bot_speed:  # phase one
             ##print("You may start, as you've drawn a faster hand.")
             append_text("You may start, as you've drawn a faster hand.")
-            time.sleep(2)
             self.clear_screen()
             while True:
                 self.playerGameStatus()
@@ -406,17 +399,13 @@ class Game:
                     break
                 else:
                     print("ERROR: item not found.")
-            time.sleep(2)
             self.botPlace()
-            time.sleep(2)
 
         if self.average_bot_speed > self.average_player_speed:  # phase one
             append_text("Your opponent starts, as he's drawn a faster hand.")
             # print("Your opponent starts, as he's drawn a faster hand.")
-            time.sleep(2)
             self.clear_screen()
             self.botPlace()
-            time.sleep(2)
             while True:
                 self.playerGameStatus()
                 Q = input("What move would you like to choose? [place/draw/gamble]: ")
@@ -431,7 +420,6 @@ class Game:
                     break
                 else:
                     print("ERROR: item not found.")
-            time.sleep(2)
             random_number = random.randint(1, 100)
             if random_number <= 20:
                 self.botDraw()
@@ -441,7 +429,6 @@ class Game:
                 self.botAttack()
             if random_number >= 71 and random_number <= 100:
                 self.botPlace()
-            time.sleep(2)
 
         while True and self.game_state == "game_running":  # end phase
             while True:
@@ -457,7 +444,6 @@ class Game:
                         break
                     if len(self.player_deck) == 0:
                         print("ERROR: item not found.")
-                        time.sleep(1)
                         continue
                 if Q in self.optionG:
                     if self.dice >= 1:
@@ -465,7 +451,6 @@ class Game:
                         break
                     if self.dice == 0:
                         print("ERROR: item not found.")
-                        time.sleep(1)
                         continue
                 if Q in self.optionP:
                     if len(self.player_hand) >= 1:
@@ -473,7 +458,6 @@ class Game:
                         break
                     if len(self.player_hand) == 0:
                         print("ERROR: item not found.")
-                        time.sleep(1)
                         continue
                 if Q in self.optionA:
                     if len(self.player_field) >= 1:
@@ -481,11 +465,9 @@ class Game:
                         break
                     if len(self.player_field) == 0:
                         print("ERROR: item not found.")
-                        time.sleep(1)
                         continue
                 else:
                     print("ERROR: item not found.")
-            time.sleep(2)
             while True:
                 self.playerDeath()
                 self.botDeath()
@@ -511,4 +493,4 @@ class Game:
                         break
                     if len(self.bot_hand) == 0:
                         continue
-            time.sleep(2)
+
