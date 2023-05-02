@@ -37,28 +37,20 @@ class GUI:
         # set button position and size
         self.button_width = 142
         self.button_height = 62
-        self.button_x = int(
-            (800 - self.button_width) / 1.99
-        )  
-        self.button_y = int((600 - self.button_height) / 2.14
-        )
+        self.button_x = int((800 - self.button_width) / 1.99)
+        self.button_y = int((600 - self.button_height) / 2.14)
 
-
-        self.button_image_normal = tk.PhotoImage(  #hover image switching
+        self.button_image_normal = tk.PhotoImage(  # hover image switching
             file=os.path.abspath("button_1.png")
         )
         self.button_image_hover = tk.PhotoImage(
             file=os.path.abspath("button_1_hover.png")
         )
-        self.button_image_normal_2 = tk.PhotoImage(
-            file=os.path.abspath("button_2.png")
-         )
+        self.button_image_normal_2 = tk.PhotoImage(file=os.path.abspath("button_2.png"))
         self.button_image_hover_2 = tk.PhotoImage(
             file=os.path.abspath("button_2_hover.png")
         )
-        self.button_image_normal_3 = tk.PhotoImage(
-            file=os.path.abspath("button_3.png")
-        )
+        self.button_image_normal_3 = tk.PhotoImage(file=os.path.abspath("button_3.png"))
         self.button_image_hover_3 = tk.PhotoImage(
             file=os.path.abspath("button_3_hover.png")
         )
@@ -84,7 +76,7 @@ class GUI:
             file=os.path.abspath("draw_button.png")
         )
         self.button_image_hover_7 = tk.PhotoImage(
-           file=os.path.abspath("draw_button_hover.png")
+            file=os.path.abspath("draw_button_hover.png")
         )
         self.button_image_normal_8 = tk.PhotoImage(
             file=os.path.abspath("play_button.png")
@@ -99,9 +91,11 @@ class GUI:
             file=os.path.abspath("exit_button_hover.png")
         )
 
-        self.text_widget = tk.Frame(self.root, bg="black", highlightthickness=0, bd=0) #text widget/frame properties
+        self.text_widget = tk.Frame(
+            self.root, bg="black", highlightthickness=0, bd=0
+        )  # text widget/frame properties
 
-        self.text_widget = tk.Text( 
+        self.text_widget = tk.Text(
             self.root,
             font=("Lemon Milk Pro Regular", 17),
             bg="#343541",
@@ -111,7 +105,7 @@ class GUI:
             highlightthickness=0,
         )
 
-        self.button = tk.Button( #button properties
+        self.button = tk.Button(  # button properties
             self.root,
             image=self.button_image_normal,
             width=self.button_width,
@@ -209,13 +203,10 @@ class GUI:
             activebackground="white",
         )
 
-        self.button_x = int(
-            (800 - self.button_width) / 1.99
-        )  # position change
+        self.button_x = int((800 - self.button_width) / 1.99)  # position change
         button_y = int((600 - self.button_height) / 2.14)
         # place the button on the window
-        self.button.place(x=self.button_x, y=self.button_y, anchor="nw"
-        )
+        self.button.place(x=self.button_x, y=self.button_y, anchor="nw")
 
         self.button_2.place(
             x=self.button_x, y=button_y + self.button_height + 10, anchor="nw"
@@ -229,7 +220,6 @@ class GUI:
         self.button.bind("<Leave>", self.switch_button_image_back)
         self.button.bind("<Button-1>", self.clear_gui_1)
 
-
         self.button_2.bind("<Enter>", self.switch_button_image_2)
         self.button_2.bind("<Leave>", self.switch_button_image_back_2)
         self.button_2.bind("<Button-1>", self.clear_gui_2)
@@ -240,23 +230,19 @@ class GUI:
 
         self.button_4.bind("<Enter>", self.switch_button_image_4)
         self.button_4.bind("<Leave>", self.switch_button_image_back_4)
-        self.button_4.bind("<Button-1>", self.game.playerAttack)
+        self.button_4.bind("<Button-1>", lambda event: self.game.playerAttack())
 
         self.button_5.bind("<Enter>", self.switch_button_image_5)
         self.button_5.bind("<Leave>", self.switch_button_image_back_5)
-        self.button_5.bind("<Button-1>", self.game.playerPlace)
+        self.button_5.bind("<Button-1>", lambda event: self.game.playerPlace())
 
         self.button_6.bind("<Enter>", self.switch_button_image_6)
         self.button_6.bind("<Leave>", self.switch_button_image_back_6)
-        self.button_6.bind("<Button-1>", self.game.playerGamble)
+        self.button_6.bind("<Button-1>", lambda event: self.game.playerGamble())
 
         self.button_7.bind("<Enter>", self.switch_button_image_7)
         self.button_7.bind("<Leave>", self.switch_button_image_back_7)
-        self.button_7.bind("<Button-1>", self.game.playerDraw)
-
-
-        # run the GUI
-        self.root.mainloop()
+        self.button_7.bind("<Button-1>", lambda event: self.game.playerDraw())
 
     # define function to switch button image on mouse hover
     def switch_button_image_3(self, event):
@@ -308,6 +294,10 @@ class GUI:
     def switch_button_image_back_7(self, event):
         self.button_7.config(image=self.button_image_normal_7)
 
+    def start_game_loop(self):
+        # run the GUI
+        self.root.mainloop()
+
     def clear_gui_1(self, event):  # action after clicking "play"
         # destroy all buttons
         self.button.destroy()
@@ -329,8 +319,16 @@ class GUI:
 
         # reposition the button and place it on the window
         self.button_7.place(x=558, y=469, anchor="nw")
-
-        self.game.startGame(self.append_text)
+        self.text_widget.pack()
+        self.text_widget.place(
+            relx=0.5, rely=0.3915, relwidth=0.85, relheight=0.57, anchor="center"
+        )
+        is_my_turn = self.game.startGame()
+        if is_my_turn:
+            self.append_text("You may start, as you've drawn a faster hand!")
+        else:
+            self.append_text("Your opponent starts, as he's drawn a faster hand!")
+            self.game.start_opponent_turn()
 
     def clear_gui_2(self, event):
         self.button.destroy()
@@ -349,17 +347,13 @@ class GUI:
         time.sleep(1)
         self.root.destroy()
 
-
     def append_text(self, text):
         self.text_widget.insert(tk.END, text + "\n")
         self.text_widget.see(tk.END)
-        self.text_widget.pack()
-        self.text_widget.place(
-            relx=0.5, rely=0.3915, relwidth=0.895, relheight=0.645, anchor="center"
-        )
 
 
 game = Game()
+print(game)
 gui = GUI(game)
 game.gui = gui
-
+gui.start_game_loop()
