@@ -230,7 +230,7 @@ class Game:
                 break
             print("ERROR: item not found.")
         self.playerGameStatus()
-        print("You have successfully placed down " + str(c) + ".")
+        self.gui.append_text("You have successfully placed down " + str(c) + ".")
 
     def botPlace(self):  # bot place
         random_number = random.randint(1, 3)

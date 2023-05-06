@@ -10,7 +10,8 @@ class GUI:
         self.root = tk.Tk()
 
         # window size
-        self.root.geometry("800x600")
+        self.root.geometry("1920x1080")
+        self.root.state('zoomed')
 
         # title and logo
         self.root.title("Cylense")
@@ -27,18 +28,17 @@ class GUI:
         # calculate position of the window
         self.screen_width = self.root.winfo_screenwidth()
         self.screen_height = self.root.winfo_screenheight()
-        self.x = int((self.screen_width - 800) / 2)
-        self.y = int((self.screen_height - 600) / 2)
+        self.x = int((self.screen_width - 1920) / 2)
+        self.y = int((self.screen_height - 1080) / 2)
 
         # set window position
         self.root.geometry("+{}+{}".format(self.x, self.y))
         self.root.protocol("WM_DELETE_WINDOW", game.set_game_state("game_over"))
 
         # set button position and size
-        self.button_width = 142
-        self.button_height = 62
-        self.button_x = int((800 - self.button_width) / 1.99)
-        self.button_y = int((600 - self.button_height) / 2.14)
+        self.button_width = 250
+        self.button_height = 75
+        self.button_y = int((1080 - self.button_height) / 2.5)
 
         self.button_image_normal = tk.PhotoImage(  # hover image switching
             file=os.path.abspath("button_1.png")
@@ -95,16 +95,29 @@ class GUI:
             self.root, bg="black", highlightthickness=0, bd=0
         )  # text widget/frame properties
 
+        self.input_widet = tk.Frame(
+            self.root, bg="black", highlightthickness=0, bd=0
+        )
+
         self.text_widget = tk.Text(
             self.root,
             font=("Lemon Milk Pro Regular", 17),
-            bg="#343541",
+            bg= "#343541",
             fg="white",
             wrap="word",
             bd=0,
             highlightthickness=0,
         )
 
+        self.input_widget = tk.Text(
+            self.root,
+            font=("Lemon Milk Pro Regular", 17),
+            bg= "#343541",
+            fg="white",
+            wrap="word",
+            bd=0,
+            highlightthickness=0,
+        )
         self.button = tk.Button(  # button properties
             self.root,
             image=self.button_image_normal,
@@ -141,8 +154,8 @@ class GUI:
         self.button_4 = tk.Button(
             self.root,
             image=self.button_image_normal_4,
-            width=100,
-            height=103,
+            width=232,
+            height=114,
             bd=0,
             relief="sunken",
             highlightthickness=0,
@@ -152,8 +165,8 @@ class GUI:
         self.button_5 = tk.Button(
             self.root,
             image=self.button_image_normal_5,
-            width=100,
-            height=103,
+            width=232,
+            height=114,
             bd=0,
             relief="sunken",
             highlightthickness=0,
@@ -163,8 +176,8 @@ class GUI:
         self.button_6 = tk.Button(
             self.root,
             image=self.button_image_normal_6,
-            width=100,
-            height=103,
+             width=232,
+            height=114,
             bd=0,
             relief="sunken",
             highlightthickness=0,
@@ -174,8 +187,8 @@ class GUI:
         self.button_7 = tk.Button(
             self.root,
             image=self.button_image_normal_7,
-            width=100,
-            height=103,
+            width=232,
+            height=114,
             bd=0,
             relief="sunken",
             highlightthickness=0,
@@ -185,8 +198,8 @@ class GUI:
         self.button_8 = tk.Button(
             self.root,
             image=self.button_image_normal_8,
-            width=100,
-            height=103,
+            width=244,
+            height=116,
             bd=0,
             relief="sunken",
             highlightthickness=0,
@@ -195,25 +208,25 @@ class GUI:
         self.button_9 = tk.Button(
             self.root,
             image=self.button_image_normal_9,
-            width=100,
-            height=103,
+            width=244,
+            height=116,
             bd=0,
             relief="sunken",
             highlightthickness=0,
             activebackground="white",
         )
 
-        self.button_x = int((800 - self.button_width) / 1.99)  # position change
-        button_y = int((600 - self.button_height) / 2.14)
-        # place the button on the window
+        self.button_x = int((1920 - self.button_width) / 2.012)
+        button_y = int((1080 - self.button_height) / 2.5)
+
         self.button.place(x=self.button_x, y=self.button_y, anchor="nw")
 
         self.button_2.place(
-            x=self.button_x, y=button_y + self.button_height + 10, anchor="nw"
+            x=self.button_x, y=button_y + self.button_height + 28, anchor="nw"
         )
 
         self.button_3.place(
-            x=self.button_x, y=button_y + (2 * self.button_height) + 20, anchor="nw"
+            x=self.button_x, y=button_y + (2 * self.button_height) + 56, anchor="nw"
         )
 
         self.button.bind("<Enter>", self.switch_button_image)
@@ -308,21 +321,35 @@ class GUI:
         self.bg_label.config(image=bg_image)
         self.bg_label.image = bg_image
 
-        # reposition the button and place it on the window
-        self.button_4.place(x=138, y=469, anchor="nw")
+        """self.button_4.config(width=244, height=116)
+        self.button_5.config(width=244, height=116)
+        self.button_6.config(width=244, height=116)
+        self.button_7.config(width=244, height=116)"""
 
         # reposition the button and place it on the window
-        self.button_5.place(x=278, y=469, anchor="nw")
+        self.button_4.place(x=142, y=730, anchor="nw")
 
         # reposition the button and place it on the window
-        self.button_6.place(x=418, y=469, anchor="nw")
+        self.button_5.place(x=406, y=730, anchor="nw")
 
         # reposition the button and place it on the window
-        self.button_7.place(x=558, y=469, anchor="nw")
+        self.button_6.place(x=142, y=866, anchor="nw")
+
+        # reposition the button and place it on the window
+        self.button_7.place(x=406, y=866, anchor="nw")
         self.text_widget.pack()
         self.text_widget.place(
-            relx=0.5, rely=0.3915, relwidth=0.85, relheight=0.57, anchor="center"
+            relx=0.41, rely=0.373, relwidth=0.67, relheight=0.56, anchor="center"
         )
+
+        self.input_widget.pack()
+        self.input_widget.place(
+            relx=0.565, rely=0.75, relwidth=0.20, relheight=0.10, anchor="center"
+        )
+
+
+
+
         is_my_turn = self.game.startGame()
         if is_my_turn:
             self.append_text("You may start, as you've drawn a faster hand!")
