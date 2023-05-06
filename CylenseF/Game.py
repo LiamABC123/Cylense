@@ -5,6 +5,8 @@ from os import system
 from sys import platform
 from NameGen import MonsterGenerator
 
+game_states = ["game_over", "game_running", "player_place", "player_attack"]
+
 
 class Game:
     def __init__(self):
@@ -107,7 +109,7 @@ class Game:
                 dmg = [1000, 2000, 3000, 4000]
                 dmg_chosen = random.choice(dmg)
                 self.player_life = self.player_life - dmg_chosen
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "You've shot yourself in the foot and lost "
                     + str(dmg_chosen)
@@ -117,7 +119,7 @@ class Game:
                 dmg = [1000, 2000]
                 dmg_chosen = random.choice(dmg)
                 self.bot_life = self.bot_life - dmg_chosen
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "You shot your opponent with a banana pistol, they lost "
                     + str(dmg_chosen)
@@ -125,25 +127,25 @@ class Game:
                 )
             if decision == 3:
                 self.player_field.clear()
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "You accidentally dropped an explosive into your field. All monsters have fainted."
                 )
             if decision == 4:
                 self.bot_field.clear()
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "You threw an explosive into the opponent's field. All monsters have fainted."
                 )
             if decision == 5:
                 self.player_hand.clear()
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "The wind blew away your all the cards in your hands."
                 )
             if decision == 6:
                 self.bot_hand.clear()
-                self.playerGameStatus()
+                # self.playerGameStatus()
                 self.gui.append_text(
                     "The wind blew away all the cards in your opponent's hands."
                 )
@@ -204,7 +206,7 @@ class Game:
         random_card = random.choice(self.player_deck)
         self.player_deck.remove(random_card)
         self.player_hand.append(random_card)
-        self.playerGameStatus()
+        # self.playerGameStatus()
         self.gui.append_text("You drew " + str(random_card.name) + ".")
         self.end_my_turn()
 
@@ -215,22 +217,37 @@ class Game:
         self.botGamesStatus()
         self.gui.append_text("Your opponent drew a card.")
 
-    def playerPlace(self):  # player place
-        self.playerGameStatus()
-        while True:
-            c = input("What card would you like to place down? ")
-            card_found = False
-            for card in self.player_hand:
-                if card.name == c:
-                    self.player_hand.remove(card)
-                    self.player_field.append(card)
-                    card_found = True
-                    break
-            if card_found:
+    def startPlayerPlace(self):  # start player place
+        self.gui.append_text("Summoning phase started")
+        self.gui.append_text("What card would you like to place down?")
+        self.gui.append_text("Your hand: ")
+        for card in self.player_hand:
+            self.gui.append_text(card.name)
+        self.game_state = "player_place"
+
+    def playerPlace(self, card_name):  # player place
+        # self.playerGameStatus()
+        if self.game_state != "player_place":
+            self.gui.append_text("It is not your summoning phase.")
+            return
+        card_found = False
+        for card in self.player_hand:
+            if card.name == card_name:
+                self.player_hand.remove(card)
+                self.player_field.append(card)
+                card_found = True
                 break
-            print("ERROR: item not found.")
-        self.playerGameStatus()
-        self.gui.append_text("You have successfully placed down " + str(c) + ".")
+        if not card_found:
+            self.gui.append_text("You do not have this card in your hand.")
+            return
+
+        # self.playerGameStatus()
+        self.gui.append_text(
+            "You have successfully placed down " + str(card_name) + "."
+        )
+        self.game_state = "game_running"
+        self.gui.append_text("Summoning phase ended")
+        self.end_my_turn()
 
     def botPlace(self):  # bot place
         random_number = random.randint(1, 3)
@@ -251,60 +268,76 @@ class Game:
             "Your opponent successfully placed down " + str(card_choice.name) + "."
         )
 
-    def playerAttack(self):  # player attack
-        while True:
-            c = input("What card would you like to attack with? ")
-            card_found = False
-            for card in self.player_field:
-                if card.name == c:
-                    c = card
-                    card_found = True
-                    break
-            if card_found:
+    def startAttackPhase(self):  # start player attack
+        self.gui.append_text("Attack phase started")
+        self.gui.append_text("What card would you like to attack with?")
+        self.gui.append_text("Your field: ")
+        for card in self.player_field:
+            self.gui.append_text(card.name)
+        self.game_state = "player_attack"
+
+    def playerAttack(self, card_name):
+        if self.game_state != "player_attack":
+            return
+
+        card_found = None
+        for card in self.player_field:
+            if card.name == card_name:
+                card_found = card
                 break
-            print("ERROR: item not found.")
+
+        if not card_found:
+            self.gui.append_text("You do not have this card in your field.")
+            return
+
         if len(self.bot_field) > 0:
             self.bot_life
             self.player_life
             random_monster = random.choice(self.bot_field)
-            if int(card.attack) > int(random_monster.defense):
+            if int(card_found.attack) > int(random_monster.defense):
                 self.bot_field.remove(random_monster)
-                dmg = card.attack - random_monster.defense
+                dmg = card_found.attack - random_monster.defense
                 self.bot_life = int(self.bot_life) - int(dmg)
-                print(
-                    card.name
+                self.gui.append_text(
+                    card_found.name
                     + " attacked "
                     + random_monster.name
                     + ". Your opponent lost "
                     + str(dmg)
                     + " HP."
                 )
-            if int(card.attack) < int(random_monster.defense):
-                self.player_field.remove(card)
-                dmg = int(random_monster.defense) - int(card.attack)
+            if int(card_found.attack) < int(random_monster.defense):
+                self.player_field.remove(card_found)
+                dmg = int(random_monster.defense) - int(card_found.attack)
                 self.player_life = int(self.player_life) - int(dmg)
-                print(
-                    card.name
+                self.gui.append_text(
+                    card_found.name
                     + " attacked "
                     + random_monster.name
                     + ". Attack unsuccessful, you lost "
                     + str(dmg)
                     + " HP."
                 )
-            if int(card.attack) == int(random_monster.defense):
+            if int(card_found.attack) == int(random_monster.defense):
                 self.player_life = int(self.player_life) - 1000
                 self.bot_life = int(self.bot_life) - 1000
                 self.bot_field.remove(random_monster)
-                self.player_field.remove(card)
-                print(
-                    card.name
+                self.player_field.remove(card_found)
+                self.gui.append_text(
+                    card_found.name
                     + " attacked "
                     + random_monster.name
                     + ". Attack unsuccessful, both monsters have fainted."
                 )
         else:
-            self.bot_life = int(self.bot_life) - int(card.attack)
-            print("You used " + card.name + " to attack your opponent directly.")
+            self.bot_life = int(self.bot_life) - int(card_found.attack)
+            self.gui.append_text(
+                "You used " + card_found.name + " to attack your opponent directly."
+            )
+        self.game_state = "game_running"
+        self.gui.append_text("Attack phase ended")
+        self.gui.update_information()
+        self.end_my_turn()
 
     def botAttack(self):  # bot attack
         highest_attack_obj = max(self.bot_field, key=lambda x: x.attack)
@@ -365,6 +398,7 @@ class Game:
                 + str(highest_attack_obj.attack)
                 + " HP."
             )
+        self.gui.update_information()
 
     def playerDeath(self):
         if self.player_life <= 0:
@@ -399,7 +433,7 @@ class Game:
     def end_opponent_turn(self):
         self.is_my_turn = True
         self.opponent_turn_count += 1
-        self.gui.append_text("Your turn!")
+        self.gui.append_text("\nYour turn!")
 
     def start_my_turn(self, action):
         self.playerDeath()
@@ -445,6 +479,5 @@ class Game:
 
     def startGame(self):
         self.game_state = "game_running"
-        self.clear_screen()  # PHASE ONE
         self.is_my_turn = self.average_player_speed > self.average_bot_speed
         return self.is_my_turn

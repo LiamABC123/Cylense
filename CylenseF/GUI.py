@@ -11,7 +11,7 @@ class GUI:
 
         # window size
         self.root.geometry("1920x1080")
-        self.root.state('zoomed')
+        self.root.state("zoomed")
 
         # title and logo
         self.root.title("Cylense")
@@ -91,18 +91,22 @@ class GUI:
             file=os.path.abspath("exit_button_hover.png")
         )
 
+        self.opponent_life_points_label = tk.Label(
+            self.root,
+            text="Opponent's life points: " + str(self.game.bot_life),
+        )
+        self.opponent_life_points_label.pack(side="top", anchor="ne", padx=10, pady=10)
+
         self.text_widget = tk.Frame(
             self.root, bg="black", highlightthickness=0, bd=0
         )  # text widget/frame properties
 
-        self.input_widet = tk.Frame(
-            self.root, bg="black", highlightthickness=0, bd=0
-        )
+        self.input_widet = tk.Frame(self.root, bg="black", highlightthickness=0, bd=0)
 
         self.text_widget = tk.Text(
             self.root,
             font=("Lemon Milk Pro Regular", 17),
-            bg= "#343541",
+            bg="#343541",
             fg="white",
             wrap="word",
             bd=0,
@@ -112,7 +116,7 @@ class GUI:
         self.input_widget = tk.Text(
             self.root,
             font=("Lemon Milk Pro Regular", 17),
-            bg= "#343541",
+            bg="#343541",
             fg="white",
             wrap="word",
             bd=0,
@@ -176,7 +180,7 @@ class GUI:
         self.button_6 = tk.Button(
             self.root,
             image=self.button_image_normal_6,
-             width=232,
+            width=232,
             height=114,
             bd=0,
             relief="sunken",
@@ -243,11 +247,21 @@ class GUI:
 
         self.button_4.bind("<Enter>", self.switch_button_image_4)
         self.button_4.bind("<Leave>", self.switch_button_image_back_4)
-        self.button_4.bind("<Button-1>", lambda event: self.game.playerAttack())
+        self.button_4.bind(
+            "<Button-1>",
+            lambda event: self.clearInputAndAttack()
+            if self.game.game_state == "player_attack"
+            else self.game.startAttackPhase(),
+        )
 
         self.button_5.bind("<Enter>", self.switch_button_image_5)
         self.button_5.bind("<Leave>", self.switch_button_image_back_5)
-        self.button_5.bind("<Button-1>", lambda event: self.game.playerPlace())
+        self.button_5.bind(
+            "<Button-1>",
+            lambda event: self.clearInputAndPlaceCard()
+            if self.game.game_state == "player_place"
+            else self.game.startPlayerPlace(),
+        )
 
         self.button_6.bind("<Enter>", self.switch_button_image_6)
         self.button_6.bind("<Leave>", self.switch_button_image_back_6)
@@ -311,6 +325,35 @@ class GUI:
         # run the GUI
         self.root.mainloop()
 
+    def update_information(self):
+        self.opponent_life_points_label.config(
+            text="Opponent Life Points: " + str(self.game.bot_life)
+        )
+        return
+
+    def clearInputAndAttack(self):
+        try:
+            input_value = self.input_widget.get("1.0", "end-1c")
+            self.game.playerAttack(input_value)
+            self.input_widget.delete("1.0", "end")
+            print("input_value: " + input_value)
+        except:
+            input_value = ""
+            self.input_widget.delete("1.0", "end")
+            self.game.playerAttack(input_value)
+
+    def clearInputAndPlaceCard(self):
+        print("clearInputAndPlaceCard")
+        try:
+            input_value = self.input_widget.get("1.0", "end-1c")
+            self.game.playerPlace(input_value)
+            self.input_widget.delete("1.0", "end")
+            print("input_value: " + input_value)
+        except:
+            input_value = ""
+            self.input_widget.delete("1.0", "end")
+            self.game.playerPlace(input_value)
+
     def clear_gui_1(self, event):  # action after clicking "play"
         # destroy all buttons
         self.button.destroy()
@@ -346,9 +389,6 @@ class GUI:
         self.input_widget.place(
             relx=0.565, rely=0.75, relwidth=0.20, relheight=0.10, anchor="center"
         )
-
-
-
 
         is_my_turn = self.game.startGame()
         if is_my_turn:
